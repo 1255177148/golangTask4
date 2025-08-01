@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"github.com/1255177148/golangTask4/internal/app/model/dto"
 	"github.com/1255177148/golangTask4/internal/app/model/po"
 	"github.com/1255177148/golangTask4/internal/utils"
@@ -28,8 +29,35 @@ func (p *PostRepository) CreatePost(postDTO *dto.PostDTO) error {
 // FindPosts 获取文章列表
 func (p *PostRepository) FindPosts() ([]dto.PostDTO, error) {
 	var posts []dto.PostDTO
-	if err := p.db.Table("posts").Scan(&posts).Error; err != nil {
+	if err := p.db.Table("posts").Select("id", "title", "created_at").Scan(&posts).Error; err != nil {
 		return nil, err
 	}
 	return posts, nil
+}
+
+func (p *PostRepository) GetPostById(id uint) (*dto.PostDTO, error) {
+	var post dto.PostDTO
+	if err := p.db.Table("posts").Where("id = ?", id).Scan(&post).Error; err != nil {
+		return nil, err
+	}
+	return &post, nil
+}
+
+func (p *PostRepository) UpdatePost(postDTO *dto.PostDTO) error {
+	return p.db.Transaction(func(tx *gorm.DB) error {
+		// 查询文章作者是否是当前登录人员
+		var userId uint
+		if err := tx.Table("posts").Select("user_id").Where("id = ?", postDTO.ID).Scan(&userId).Error; err != nil {
+			return err
+		}
+		if userId != postDTO.UserId {
+			return errors.New("非文章作者，无权修改此文章")
+		}
+		var post po.Post
+		if err := utils.MapStruct(postDTO, &post); err != nil {
+			return err
+		}
+		return p.db.Save(&post).Error
+	})
+
 }

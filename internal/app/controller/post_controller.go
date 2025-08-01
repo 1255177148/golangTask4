@@ -48,3 +48,33 @@ func (ctr *PostController) GetPostList(c *gin.Context) {
 	}
 	response.Success(c, postDTOList)
 }
+
+// Detail 获取文章详情
+func (ctr *PostController) Detail(c *gin.Context) {
+	var postDTO dto.PostDTO
+	if err := binder.BindAndValidate(c, &postDTO); err != nil {
+		response.Fail(c, http.StatusBadRequest, constant.ParseParamFail)
+		return
+	}
+	post, err := ctr.postService.FindPostById(postDTO.ID)
+	if err != nil {
+		response.Fail(c, http.StatusBadRequest, constant.ParseParamFail)
+		return
+	}
+	response.Success(c, post)
+}
+
+func (ctr *PostController) ModifyPost(c *gin.Context) {
+	userId, _ := c.Get("user_id")
+	var postDTO dto.PostDTO
+	if err := binder.BindAndValidate(c, &postDTO); err != nil {
+		response.Fail(c, http.StatusBadRequest, constant.ParseParamFail)
+		return
+	}
+	postDTO.UserId = userId.(uint)
+	if err := ctr.postService.UpdatePost(&postDTO); err != nil {
+		log.Error("修改文章报错", zap.Error(err))
+		response.Fail(c, http.StatusInternalServerError, constant.ServiceFail)
+	}
+	response.Success(c, nil)
+}

@@ -46,3 +46,16 @@ func (ps *PostService) CreatePost(postDTO *dto.PostDTO) error {
 func (ps *PostService) FindPosts() ([]dto.PostDTO, error) {
 	return ps.postRepo.FindPosts()
 }
+
+func (ps *PostService) FindPostById(id uint) (*dto.PostDTO, error) {
+	var post *dto.PostDTO
+	post, err := ps.postRepo.GetPostById(id)
+	if err != nil {
+		return nil, err
+	}
+	return post, nil
+}
+
+func (ps *PostService) UpdatePost(postDTO *dto.PostDTO) error {
+	return ps.postRepo.UpdatePost(postDTO)
+}

@@ -19,5 +19,7 @@ func RegisterPostRoutes(rg *gin.RouterGroup, db *gorm.DB, sqlxDB *sqlx.DB) {
 	{
 		posts.POST("/", postController.CreatePost)
 		posts.GET("/list", postController.GetPostList)
+		posts.GET("/detail", postController.Detail)
+		posts.PUT("/modify", postController.ModifyPost)
 	}
 }
