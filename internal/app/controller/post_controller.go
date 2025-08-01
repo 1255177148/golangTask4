@@ -64,6 +64,7 @@ func (ctr *PostController) Detail(c *gin.Context) {
 	response.Success(c, post)
 }
 
+// ModifyPost 修改文章
 func (ctr *PostController) ModifyPost(c *gin.Context) {
 	userId, _ := c.Get("user_id")
 	var postDTO dto.PostDTO
@@ -75,6 +76,22 @@ func (ctr *PostController) ModifyPost(c *gin.Context) {
 	if err := ctr.postService.UpdatePost(&postDTO); err != nil {
 		log.Error("修改文章报错", zap.Error(err))
 		response.Fail(c, http.StatusInternalServerError, constant.ServiceFail)
+	}
+	response.Success(c, nil)
+}
+
+// DeletePost 删除文章
+func (ctr *PostController) DeletePost(c *gin.Context) {
+	userId, _ := c.Get("user_id")
+	var postDTO dto.PostDTO
+	if err := binder.BindAndValidate(c, &postDTO); err != nil {
+		response.Fail(c, http.StatusBadRequest, constant.ParseParamFail)
+		return
+	}
+	if err := ctr.postService.DeletePost(postDTO.ID, userId.(uint)); err != nil {
+		log.Error("删除文章报错", zap.Error(err))
+		response.Fail(c, http.StatusInternalServerError, constant.ServiceFail)
+		return
 	}
 	response.Success(c, nil)
 }

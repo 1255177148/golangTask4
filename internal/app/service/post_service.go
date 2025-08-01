@@ -59,3 +59,7 @@ func (ps *PostService) FindPostById(id uint) (*dto.PostDTO, error) {
 func (ps *PostService) UpdatePost(postDTO *dto.PostDTO) error {
 	return ps.postRepo.UpdatePost(postDTO)
 }
+
+func (ps *PostService) DeletePost(id uint, userId uint) error {
+	return ps.postRepo.DeletePost(id, userId)
+}

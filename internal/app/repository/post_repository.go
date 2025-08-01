@@ -59,5 +59,17 @@ func (p *PostRepository) UpdatePost(postDTO *dto.PostDTO) error {
 		}
 		return p.db.Save(&post).Error
 	})
+}
 
+func (p *PostRepository) DeletePost(id uint, userId uint) error {
+	return p.db.Transaction(func(tx *gorm.DB) error {
+		var _userId uint
+		if err := tx.Table("posts").Select("user_id").Where("id = ?", id).Scan(&_userId).Error; err != nil {
+			return err
+		}
+		if _userId != userId {
+			return errors.New("非文章作者，无权删除此文章")
+		}
+		return tx.Delete(&po.Post{}, "id = ?", id).Error
+	})
 }
