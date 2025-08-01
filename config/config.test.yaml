@@ -1,0 +1,24 @@
+server:
+  port: 9080
+
+database:
+  dsn: root:root@tcp(127.0.0.1:3306)/blog_project?charset=utf8mb4&parseTime=True&loc=Local
+
+log:
+  level: "debug"
+  filename: "logs/app.log"
+  max_size: 100
+  max_backups: 7
+  max_age: 30
+  compress: true
+
+cors:
+  allowedOrigins: ["*"]
+  allowedMethods:
+    - "GET"
+    - "POST"
+    - "PUT"
+    - "DELETE"
+
+redis:
+  host: 127.0.0.1:6379
