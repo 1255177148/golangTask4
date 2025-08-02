@@ -26,7 +26,7 @@ func (ps *PostService) CreatePost(postDTO *dto.PostDTO) error {
 		userRepo := repository.NewUserRepository(tx, ps.sqlxDB)
 		// 先查看用户有没有认证
 		var authFlag string
-		authFlag, err := userRepo.CheckUserAuth(postDTO.ID)
+		authFlag, err := userRepo.CheckUserAuth(postDTO.UserId)
 		if err != nil {
 			return err
 		}

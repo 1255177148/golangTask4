@@ -11,13 +11,12 @@ import (
 
 func RegisterLoginRouter(rg *gin.RouterGroup, db *gorm.DB, sqlxDB *sqlx.DB) {
 	userRepo := repository.NewUserRepository(db, sqlxDB)
-	userService := service.NewUserService(userRepo)
+	userService := service.NewUserService(db, sqlxDB, userRepo)
 	loginCtrl := controller.NewLoginController(userService)
 	login := rg.Group("/login")
 	{
 		login.GET("/getCaptcha", loginCtrl.GetCaptcha)
 		login.POST("/register", loginCtrl.RegisterUser)
 		login.GET("/", loginCtrl.Login)
-		login.GET("/auth", loginCtrl.AuthUser)
 	}
 }

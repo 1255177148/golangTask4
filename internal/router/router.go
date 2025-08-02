@@ -17,4 +17,6 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB, sqlxDB *sqlx.DB) {
 	RegisterUserRoutes(api, db, sqlxDB)
 	// 注册文章路由
 	RegisterPostRoutes(api, db, sqlxDB)
+	// 注册评论路由
+	RegisterCommentRouters(api, db, sqlxDB)
 }

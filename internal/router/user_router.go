@@ -17,9 +17,6 @@ func RegisterUserRoutes(rg *gin.RouterGroup, db *gorm.DB, sqlxDB *sqlx.DB) {
 
 	users := rg.Group("/users")
 	{
-		users.GET("/:id", userCtrl.GetUser)
-		users.POST("/", userCtrl.CreateUser)
-		users.PUT("/:id", userCtrl.UpdateUser)
-		users.DELETE("/:id", userCtrl.DeleteUser)
+		users.GET("/auth", userCtrl.AuthUser)
 	}
 }

@@ -21,6 +21,13 @@ func NewPostController(postService *service.PostService) *PostController {
 }
 
 // CreatePost 创建文章接口
+// @Summary 创建文章接口
+// @Description 用户创建文章
+// @Tags 文章
+// @Produce json
+// @Param request formData dto.PostDTO true "用户创建文章的参数"
+// @Success 200 {object} response.ResultResponse
+// @Router /v1/posts [post]
 func (ctr *PostController) CreatePost(c *gin.Context) {
 	userId, _ := c.Get("user_id")
 	var postDTO dto.PostDTO
@@ -28,7 +35,7 @@ func (ctr *PostController) CreatePost(c *gin.Context) {
 		response.Fail(c, http.StatusBadRequest, constant.ParseParamFail)
 		return
 	}
-	postDTO.ID = userId.(uint)
+	postDTO.UserId = userId.(uint)
 	if err := ctr.postService.CreatePost(&postDTO); err != nil {
 		log.Error(constant.PostCreateFail, zap.Error(err))
 		response.Fail(c, http.StatusInternalServerError, constant.PostCreateFail)
@@ -38,6 +45,12 @@ func (ctr *PostController) CreatePost(c *gin.Context) {
 }
 
 // GetPostList 获取文章列表
+// @Summary 获取文章列表
+// @Description 获取文章列表
+// @Tags 文章
+// @Produce json
+// @Success 200 {object} response.ResultResponse
+// @Router /v1/posts/list [get]
 func (ctr *PostController) GetPostList(c *gin.Context) {
 	var postDTOList []dto.PostDTO
 	postDTOList, err := ctr.postService.FindPosts()
@@ -50,6 +63,12 @@ func (ctr *PostController) GetPostList(c *gin.Context) {
 }
 
 // Detail 获取文章详情
+// @Summary 获取文章详情
+// @Description 获取文章详情
+// @Tags 文章
+// @Produce json
+// @Success 200 {object} response.ResultResponse
+// @Router /v1/posts/detail [get]
 func (ctr *PostController) Detail(c *gin.Context) {
 	var postDTO dto.PostDTO
 	if err := binder.BindAndValidate(c, &postDTO); err != nil {
@@ -65,6 +84,12 @@ func (ctr *PostController) Detail(c *gin.Context) {
 }
 
 // ModifyPost 修改文章
+// @Summary 修改文章
+// @Description 修改文章
+// @Tags 文章
+// @Produce json
+// @Success 200 {object} response.ResultResponse
+// @Router /v1/posts/modify [put]
 func (ctr *PostController) ModifyPost(c *gin.Context) {
 	userId, _ := c.Get("user_id")
 	var postDTO dto.PostDTO
@@ -81,6 +106,12 @@ func (ctr *PostController) ModifyPost(c *gin.Context) {
 }
 
 // DeletePost 删除文章
+// @Summary 删除文章
+// @Description 删除文章
+// @Tags 文章
+// @Produce json
+// @Success 200 {object} response.ResultResponse
+// @Router /v1/posts/:id [delete]
 func (ctr *PostController) DeletePost(c *gin.Context) {
 	userId, _ := c.Get("user_id")
 	var postDTO dto.PostDTO

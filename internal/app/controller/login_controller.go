@@ -27,6 +27,13 @@ func (ctrl *LoginController) GetCaptcha(c *gin.Context) {
 }
 
 // RegisterUser 注册用户
+// @Summary 注册用户
+// @Description 注册一个用户
+// @Tags 登录
+// @Produce json
+// @Param request formData po.User true "注册表单参数"
+// @Success 200 {object} response.ResultResponse
+// @Router /login/register [post]
 func (ctrl *LoginController) RegisterUser(c *gin.Context) {
 	var user po.User
 	if err := binder.BindAndValidate(c, &user); err != nil {
@@ -35,13 +42,20 @@ func (ctrl *LoginController) RegisterUser(c *gin.Context) {
 	}
 	if err := ctrl.userService.RegisterUser(&user); err != nil {
 		log.Error(constant.RegisterFail, zap.Error(err))
-		response.Fail(c, http.StatusInternalServerError, err.Error())
+		response.Fail(c, http.StatusInternalServerError, constant.ServiceFail)
 		return
 	}
 	response.Success(c, nil)
 }
 
 // Login 用户登录
+// @Summary 用户登录
+// @Description 用户通过用户名和密码登录
+// @Tags 登录
+// @Produce json
+// @Param request formData dto.UserDTO true "用户登录参数"
+// @Success 200 {object} response.ResultResponse
+// @Router /login [get]
 func (ctrl *LoginController) Login(c *gin.Context) {
 	var user dto.UserDTO
 	if err := binder.BindAndValidate(c, &user); err != nil {
@@ -55,22 +69,4 @@ func (ctrl *LoginController) Login(c *gin.Context) {
 		return
 	}
 	response.Success(c, token)
-}
-
-// AuthUser 认证用户
-func (ctrl *LoginController) AuthUser(c *gin.Context) {
-	userId, _ := c.Get("user_id")
-	var userAuth dto.UserAuth
-	if err := binder.BindAndValidate(c, &userAuth); err != nil {
-		response.Fail(c, http.StatusBadRequest, constant.ParseParamFail)
-		return
-	}
-	userAuth.ID = userId.(uint)
-	if err := ctrl.userService.AuthUser(&userAuth); err != nil {
-		log.Error(constant.AuthFail, zap.Error(err))
-		response.Fail(c, http.StatusInternalServerError, constant.AuthFail)
-		return
-	}
-	response.Success(c, nil)
-
 }

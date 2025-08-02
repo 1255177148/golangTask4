@@ -1,0 +1,308 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "这是一个基于 Gin 的 个人博客系统后端API",
+        "title": "个人博客系统后端 API 文档",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:9080",
+    "basePath": "/api",
+    "paths": {
+        "/login": {
+            "get": {
+                "description": "用户通过用户名和密码登录",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "登录"
+                ],
+                "summary": "用户登录",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "password",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "username",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResultResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/login/register": {
+            "post": {
+                "description": "注册一个用户",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "登录"
+                ],
+                "summary": "注册用户",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "authenticationFlag",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "name": "email",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "id",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "name": "password",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "name": "userName",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResultResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/comments": {
+            "get": {
+                "description": "获取文章评论列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "评论"
+                ],
+                "summary": "获取文章评论列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResultResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "创建评论",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "评论"
+                ],
+                "summary": "创建评论",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResultResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/posts": {
+            "post": {
+                "description": "用户创建文章",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "文章"
+                ],
+                "summary": "创建文章接口",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "content",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "name": "createdAt",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "id",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "name": "title",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "userId",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResultResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/posts/:id": {
+            "delete": {
+                "description": "删除文章",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "文章"
+                ],
+                "summary": "删除文章",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResultResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/posts/detail": {
+            "get": {
+                "description": "获取文章详情",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "文章"
+                ],
+                "summary": "获取文章详情",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResultResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/posts/list": {
+            "get": {
+                "description": "获取文章列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "文章"
+                ],
+                "summary": "获取文章列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResultResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/posts/modify": {
+            "put": {
+                "description": "修改文章",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "文章"
+                ],
+                "summary": "修改文章",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResultResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/users/auth": {
+            "get": {
+                "description": "用户通过token和邮箱认证",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "认证用户",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "email",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "id",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResultResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "response.ResultResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        }
+    }
+}

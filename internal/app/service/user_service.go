@@ -61,8 +61,9 @@ func (us *UserService) AuthUser(userAuth *dto.UserAuth) error {
 		if err != nil {
 			return err
 		}
-		user.Email = userAuth.Email
-		user.AuthenticationFlag = "1"
+		user.Email = &userAuth.Email
+		var AuthenticationFlag = "1"
+		user.AuthenticationFlag = &AuthenticationFlag
 		if err = us.repo.UpdateUser(user); err != nil {
 			return err
 		}

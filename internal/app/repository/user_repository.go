@@ -23,14 +23,14 @@ func (u *UserRepository) CreateUser(user *po.User) error {
 		return err
 	}
 	user.Password = string(hashPassword)
-	u.db.Create(user)
-	return nil
+	// 插入时忽略authentication_flag，让该字段用数据库的默认值
+	return u.db.Omit("authentication_flag").Create(user).Error
 }
 
 // FindUserByUsername 根据用户名获取用户信息
 func (u *UserRepository) FindUserByUsername(username string) (*po.User, error) {
 	var user po.User
-	if err := u.db.Where("name = ?", username).First(&user).Error; err != nil {
+	if err := u.db.Where("user_name = ?", username).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
