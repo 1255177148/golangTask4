@@ -25,7 +25,7 @@ func NewCommentController(commentService *service.CommentService) *CommentContro
 // @Description 创建评论
 // @Tags 评论
 // @Produce json
-// @Param CommentReq body request.CommentReq true "新增的评论数据"
+// @Param CommentReq body request.CommentReq true "新增的评论数据，userId不用传"
 // @Success 200 {object} response.ResultResponse
 // @Security ApiKeyAuth
 // @Router /v1/comments [post]

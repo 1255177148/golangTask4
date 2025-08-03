@@ -78,29 +78,13 @@ const docTemplate = `{
                 "summary": "注册用户",
                 "parameters": [
                     {
-                        "type": "string",
-                        "name": "authenticationFlag",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "name": "email",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
-                        "name": "id",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "name": "password",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "name": "userName",
-                        "in": "formData"
+                        "description": "注册表单参数",
+                        "name": "User",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserDTO"
+                        }
                     }
                 ],
                 "responses": {

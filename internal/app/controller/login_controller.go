@@ -31,7 +31,7 @@ func (ctrl *LoginController) GetCaptcha(c *gin.Context) {
 // @Description 注册一个用户
 // @Tags 登录
 // @Produce json
-// @Param User formData po.User true "注册表单参数"
+// @Param User body dto.UserDTO true "注册表单参数"
 // @Success 200 {object} response.ResultResponse
 // @Router /login/register [post]
 func (ctrl *LoginController) RegisterUser(c *gin.Context) {

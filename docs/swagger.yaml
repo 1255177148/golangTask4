@@ -86,21 +86,12 @@ paths:
     post:
       description: 注册一个用户
       parameters:
-      - in: formData
-        name: authenticationFlag
-        type: string
-      - in: formData
-        name: email
-        type: string
-      - in: formData
-        name: id
-        type: integer
-      - in: formData
-        name: password
-        type: string
-      - in: formData
-        name: userName
-        type: string
+      - description: 注册表单参数
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserDTO'
       produces:
       - application/json
       responses:

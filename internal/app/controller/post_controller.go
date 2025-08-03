@@ -92,7 +92,7 @@ func (ctr *PostController) Detail(c *gin.Context) {
 // @Description 修改文章
 // @Tags 文章
 // @Produce json
-// @Param PostDTO body dto.PostDTO true "修改的文章数据"
+// @Param PostDTO body dto.PostDTO true "修改的文章数据,createdAt不用传"
 // @Success 200 {object} response.ResultResponse
 // @Security ApiKeyAuth
 // @Router /v1/posts/modify [put]
