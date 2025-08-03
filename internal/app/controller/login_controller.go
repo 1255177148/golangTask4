@@ -31,7 +31,7 @@ func (ctrl *LoginController) GetCaptcha(c *gin.Context) {
 // @Description 注册一个用户
 // @Tags 登录
 // @Produce json
-// @Param request formData po.User true "注册表单参数"
+// @Param User formData po.User true "注册表单参数"
 // @Success 200 {object} response.ResultResponse
 // @Router /login/register [post]
 func (ctrl *LoginController) RegisterUser(c *gin.Context) {
@@ -53,9 +53,9 @@ func (ctrl *LoginController) RegisterUser(c *gin.Context) {
 // @Description 用户通过用户名和密码登录
 // @Tags 登录
 // @Produce json
-// @Param request formData dto.UserDTO true "用户登录参数"
+// @Param UserDTO body dto.UserDTO true "用户登录参数"
 // @Success 200 {object} response.ResultResponse
-// @Router /login [get]
+// @Router /login [post]
 func (ctrl *LoginController) Login(c *gin.Context) {
 	var user dto.UserDTO
 	if err := binder.BindAndValidate(c, &user); err != nil {
@@ -69,4 +69,22 @@ func (ctrl *LoginController) Login(c *gin.Context) {
 		return
 	}
 	response.Success(c, token)
+}
+
+// Logout 用户退出登录
+// @Summary 用户退出登录
+// @Description 用户退出登录
+// @Tags 登录
+// @Produce json
+// @Success 200 {object} response.ResultResponse
+// @Router /login/logout [post]
+func (ctrl *LoginController) Logout(c *gin.Context) {
+	userId, _ := c.Get("user_id")
+	err := ctrl.userService.Logout(userId.(uint))
+	if err != nil {
+		log.Error(constant.LogoutFail, zap.Error(err))
+		response.Fail(c, http.StatusInternalServerError, constant.LogoutFail)
+		return
+	}
+	response.Success(c, nil)
 }

@@ -16,6 +16,9 @@ import (
 // @description     这是一个基于 Gin 的 个人博客系统后端API
 // @host            localhost:9080
 // @BasePath        /api
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	config.LoadConfig() // 加载配置文件
 

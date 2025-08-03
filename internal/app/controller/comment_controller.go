@@ -25,7 +25,9 @@ func NewCommentController(commentService *service.CommentService) *CommentContro
 // @Description 创建评论
 // @Tags 评论
 // @Produce json
+// @Param CommentReq body request.CommentReq true "新增的评论数据"
 // @Success 200 {object} response.ResultResponse
+// @Security ApiKeyAuth
 // @Router /v1/comments [post]
 func (cc *CommentController) CreateComment(c *gin.Context) {
 	userId, _ := c.Get("user_id")
@@ -48,7 +50,9 @@ func (cc *CommentController) CreateComment(c *gin.Context) {
 // @Description 获取文章评论列表
 // @Tags 评论
 // @Produce json
+// @Param postId query uint true "文章id"
 // @Success 200 {object} response.ResultResponse
+// @Security ApiKeyAuth
 // @Router /v1/comments [get]
 func (cc *CommentController) GetComments(c *gin.Context) {
 	var commentReq request.CommentReq

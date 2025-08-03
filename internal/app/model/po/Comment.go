@@ -1,13 +1,13 @@
 package po
 
 import (
-	"github.com/1255177148/golangTask4/internal/types"
+	"time"
 )
 
 type Comment struct {
-	ID        uint           `json:"id"`
-	PostID    uint           `json:"postId"`
-	UserID    uint           `json:"userId"`
-	Content   string         `json:"content"`
-	CreatedAt types.JSONTime `json:"createdAt"`
+	ID        uint      `json:"id"`
+	PostID    uint      `json:"postId"`
+	UserID    uint      `json:"userId"`
+	Content   string    `json:"content"`
+	CreatedAt time.Time `json:"createdAt"`
 }

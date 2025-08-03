@@ -16,7 +16,7 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/login": {
-            "get": {
+            "post": {
                 "description": "用户通过用户名和密码登录",
                 "produces": [
                     "application/json"
@@ -27,18 +27,35 @@ const docTemplate = `{
                 "summary": "用户登录",
                 "parameters": [
                     {
-                        "type": "string",
-                        "name": "password",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "name": "username",
-                        "in": "formData",
-                        "required": true
+                        "description": "用户登录参数",
+                        "name": "UserDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserDTO"
+                        }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResultResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/login/logout": {
+            "post": {
+                "description": "用户退出登录",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "登录"
+                ],
+                "summary": "用户退出登录",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -98,6 +115,11 @@ const docTemplate = `{
         },
         "/v1/comments": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "获取文章评论列表",
                 "produces": [
                     "application/json"
@@ -106,6 +128,15 @@ const docTemplate = `{
                     "评论"
                 ],
                 "summary": "获取文章评论列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "文章id",
+                        "name": "postId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -116,6 +147,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "创建评论",
                 "produces": [
                     "application/json"
@@ -124,6 +160,17 @@ const docTemplate = `{
                     "评论"
                 ],
                 "summary": "创建评论",
+                "parameters": [
+                    {
+                        "description": "新增的评论数据",
+                        "name": "CommentReq",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CommentReq"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -136,6 +183,11 @@ const docTemplate = `{
         },
         "/v1/posts": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "用户创建文章",
                 "produces": [
                     "application/json"
@@ -146,29 +198,13 @@ const docTemplate = `{
                 "summary": "创建文章接口",
                 "parameters": [
                     {
-                        "type": "string",
-                        "name": "content",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "name": "createdAt",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
-                        "name": "id",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "name": "title",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
-                        "name": "userId",
-                        "in": "formData"
+                        "description": "用户创建文章的参数,只传content和title字段",
+                        "name": "PostDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostDTO"
+                        }
                     }
                 ],
                 "responses": {
@@ -183,6 +219,11 @@ const docTemplate = `{
         },
         "/v1/posts/:id": {
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "删除文章",
                 "produces": [
                     "application/json"
@@ -191,6 +232,15 @@ const docTemplate = `{
                     "文章"
                 ],
                 "summary": "删除文章",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "文章id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -203,6 +253,11 @@ const docTemplate = `{
         },
         "/v1/posts/detail": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "获取文章详情",
                 "produces": [
                     "application/json"
@@ -211,6 +266,15 @@ const docTemplate = `{
                     "文章"
                 ],
                 "summary": "获取文章详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "文章id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -223,6 +287,11 @@ const docTemplate = `{
         },
         "/v1/posts/list": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "获取文章列表",
                 "produces": [
                     "application/json"
@@ -243,6 +312,11 @@ const docTemplate = `{
         },
         "/v1/posts/modify": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "修改文章",
                 "produces": [
                     "application/json"
@@ -251,6 +325,17 @@ const docTemplate = `{
                     "文章"
                 ],
                 "summary": "修改文章",
+                "parameters": [
+                    {
+                        "description": "修改的文章数据",
+                        "name": "PostDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostDTO"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -263,6 +348,11 @@ const docTemplate = `{
         },
         "/v1/users/auth": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "用户通过token和邮箱认证",
                 "produces": [
                     "application/json"
@@ -274,13 +364,10 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "用户认证参数",
                         "name": "email",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "integer",
-                        "name": "id",
-                        "in": "formData"
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -295,6 +382,55 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.PostDTO": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UserDTO": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.CommentReq": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "postId": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
         "response.ResultResponse": {
             "type": "object",
             "properties": {
@@ -309,6 +445,13 @@ const docTemplate = `{
                     "type": "boolean"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

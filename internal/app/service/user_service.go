@@ -8,9 +8,12 @@ import (
 	"github.com/1255177148/golangTask4/internal/utils"
 	"github.com/1255177148/golangTask4/internal/utils/log"
 	"github.com/jmoiron/sqlx"
+	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
+	"strconv"
+	"time"
 )
 
 type UserService struct {
@@ -49,6 +52,16 @@ func (us *UserService) CheckLogin(user *dto.UserDTO) (string, error) {
 		log.Error("生成token出错", zap.Error(err))
 		return "", errors.New("生成token出错")
 	}
+	// 将token放到redis中
+	hashToken := utils.Sha256Hex(token)
+	redisKey := "jwt_token" + hashToken
+	if err = utils.SetRDB(redisKey, user.Username, time.Hour*24); err != nil {
+		return "", err
+	}
+	userKey := strconv.FormatUint(uint64(originUser.ID), 10)
+	if err = utils.SetRDB(userKey, redisKey, time.Hour*24); err != nil {
+		return "", err
+	}
 	return token, nil
 }
 
@@ -69,4 +82,21 @@ func (us *UserService) AuthUser(userAuth *dto.UserAuth) error {
 		}
 		return nil
 	})
+}
+
+// Logout 退出登录
+func (us *UserService) Logout(userId uint) error {
+	// 根据user id从redis里获取token
+	userKey := strconv.FormatUint(uint64(userId), 10)
+	token, err := utils.GetRDB(userKey)
+	if errors.Is(err, redis.Nil) {
+		return nil
+	} else if err != nil {
+		return err
+	}
+	err = utils.DeleteRDB(token)
+	if err != nil {
+		return err
+	}
+	return nil
 }

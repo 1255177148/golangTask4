@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"github.com/golang-jwt/jwt/v5"
 	"time"
 )
@@ -12,7 +14,7 @@ var refreshSecret = []byte("refresh_secret")
 func GenerateAccessToken(userID uint) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id": userID,
-		"exp":     time.Now().Add(15 * time.Minute).Unix(),
+		"exp":     time.Now().Add(24 * time.Hour).Unix(),
 		"typ":     "access",
 	}
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(accessSecret)
@@ -42,4 +44,11 @@ func ParseToken(tokenStr string, isRefresh bool) (uint, error) {
 	}
 	claims := token.Claims.(jwt.MapClaims)
 	return uint(claims["user_id"].(float64)), nil
+}
+
+// Sha256Hex 计算字符串的 SHA-256 哈希，返回十六进制字符串
+func Sha256Hex(s string) string {
+	h := sha256.New()
+	h.Write([]byte(s))
+	return hex.EncodeToString(h.Sum(nil))
 }

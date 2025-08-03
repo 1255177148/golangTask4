@@ -25,8 +25,9 @@ func NewUserController(userService *service.UserService) *UserController {
 // @Description 用户通过token和邮箱认证
 // @Tags 用户
 // @Produce json
-// @Param request formData dto.UserAuth true "用户认证参数"
+// @Param email query string true "用户认证参数"
 // @Success 200 {object} response.ResultResponse
+// @Security ApiKeyAuth
 // @Router /v1/users/auth [get]
 func (uc *UserController) AuthUser(c *gin.Context) {
 	userId, _ := c.Get("user_id")

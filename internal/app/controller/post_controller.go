@@ -25,8 +25,9 @@ func NewPostController(postService *service.PostService) *PostController {
 // @Description 用户创建文章
 // @Tags 文章
 // @Produce json
-// @Param request formData dto.PostDTO true "用户创建文章的参数"
+// @Param PostDTO body dto.PostDTO true "用户创建文章的参数,只传content和title字段"
 // @Success 200 {object} response.ResultResponse
+// @Security ApiKeyAuth
 // @Router /v1/posts [post]
 func (ctr *PostController) CreatePost(c *gin.Context) {
 	userId, _ := c.Get("user_id")
@@ -50,6 +51,7 @@ func (ctr *PostController) CreatePost(c *gin.Context) {
 // @Tags 文章
 // @Produce json
 // @Success 200 {object} response.ResultResponse
+// @Security ApiKeyAuth
 // @Router /v1/posts/list [get]
 func (ctr *PostController) GetPostList(c *gin.Context) {
 	var postDTOList []dto.PostDTO
@@ -67,7 +69,9 @@ func (ctr *PostController) GetPostList(c *gin.Context) {
 // @Description 获取文章详情
 // @Tags 文章
 // @Produce json
+// @Param id query uint true "文章id"
 // @Success 200 {object} response.ResultResponse
+// @Security ApiKeyAuth
 // @Router /v1/posts/detail [get]
 func (ctr *PostController) Detail(c *gin.Context) {
 	var postDTO dto.PostDTO
@@ -88,7 +92,9 @@ func (ctr *PostController) Detail(c *gin.Context) {
 // @Description 修改文章
 // @Tags 文章
 // @Produce json
+// @Param PostDTO body dto.PostDTO true "修改的文章数据"
 // @Success 200 {object} response.ResultResponse
+// @Security ApiKeyAuth
 // @Router /v1/posts/modify [put]
 func (ctr *PostController) ModifyPost(c *gin.Context) {
 	userId, _ := c.Get("user_id")
@@ -110,7 +116,9 @@ func (ctr *PostController) ModifyPost(c *gin.Context) {
 // @Description 删除文章
 // @Tags 文章
 // @Produce json
+// @Param id path uint true "文章id"
 // @Success 200 {object} response.ResultResponse
+// @Security ApiKeyAuth
 // @Router /v1/posts/:id [delete]
 func (ctr *PostController) DeletePost(c *gin.Context) {
 	userId, _ := c.Get("user_id")

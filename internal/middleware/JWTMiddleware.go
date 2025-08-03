@@ -24,6 +24,29 @@ func JWTMiddleware() gin.HandlerFunc {
 		}
 
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+		// 先校验下redis里是否存在该token，不存在的话说明已经退出登录了
+		hashToken := utils.Sha256Hex(tokenString)
+		redisKey := "jwt_token" + hashToken
+		val, err := utils.ExistsRDB(redisKey)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, response.ResultResponse{
+				Status:  http.StatusUnauthorized,
+				Message: "解析token失败",
+				Success: false,
+			})
+			c.Abort()
+			return
+		}
+		if !val {
+			c.JSON(http.StatusUnauthorized, response.ResultResponse{
+				Status:  http.StatusUnauthorized,
+				Message: "未登录",
+				Data:    nil,
+				Success: false,
+			})
+			c.Abort()
+			return
+		}
 		userId, err := utils.ParseToken(tokenString, false)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, response.ResultResponse{
