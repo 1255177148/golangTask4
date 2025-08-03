@@ -119,7 +119,7 @@ func (ctr *PostController) ModifyPost(c *gin.Context) {
 // @Param id path uint true "文章id"
 // @Success 200 {object} response.ResultResponse
 // @Security ApiKeyAuth
-// @Router /v1/posts/:id [delete]
+// @Router /v1/posts/{id} [delete]
 func (ctr *PostController) DeletePost(c *gin.Context) {
 	userId, _ := c.Get("user_id")
 	var postDTO dto.PostDTO

@@ -37,12 +37,12 @@ func (cs *CommentService) CreateComment(commentReq *request.CommentReq) error {
 			return errors.New(constant.NotAuth)
 		}
 		commentRepo := repository.NewCommentRepository(tx, cs.sqlxDB)
-		var comment *po.Comment
+		var comment po.Comment
 		err = utils.MapStruct(commentReq, &comment)
 		if err != nil {
 			return err
 		}
-		return commentRepo.CreateComment(comment)
+		return commentRepo.CreateComment(&comment)
 	})
 }
 

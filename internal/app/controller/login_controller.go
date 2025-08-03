@@ -77,6 +77,7 @@ func (ctrl *LoginController) Login(c *gin.Context) {
 // @Tags 登录
 // @Produce json
 // @Success 200 {object} response.ResultResponse
+// @Security ApiKeyAuth
 // @Router /login/logout [post]
 func (ctrl *LoginController) Logout(c *gin.Context) {
 	userId, _ := c.Get("user_id")

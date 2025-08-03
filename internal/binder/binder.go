@@ -101,7 +101,7 @@ func Bind(c *gin.Context, obj interface{}) error {
 			return err
 		}
 	default:
-		if c.Request.Method == http.MethodGet {
+		if c.Request.Method == http.MethodGet || c.Request.Method == http.MethodDelete {
 			// GET 请求默认只解析 Query
 			return nil
 		}

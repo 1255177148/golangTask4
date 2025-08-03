@@ -79,6 +79,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/response.ResultResponse'
+      security:
+      - ApiKeyAuth: []
       summary: 用户退出登录
       tags:
       - 登录
@@ -126,7 +128,7 @@ paths:
     post:
       description: 创建评论
       parameters:
-      - description: 新增的评论数据
+      - description: 新增的评论数据，userId不用传
         in: body
         name: CommentReq
         required: true
@@ -166,7 +168,7 @@ paths:
       summary: 创建文章接口
       tags:
       - 文章
-  /v1/posts/:id:
+  /v1/posts/{id}:
     delete:
       description: 删除文章
       parameters:
@@ -227,7 +229,7 @@ paths:
     put:
       description: 修改文章
       parameters:
-      - description: 修改的文章数据
+      - description: 修改的文章数据,createdAt不用传
         in: body
         name: PostDTO
         required: true

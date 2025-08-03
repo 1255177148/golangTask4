@@ -57,7 +57,7 @@ func (p *PostRepository) UpdatePost(postDTO *dto.PostDTO) error {
 		if err := utils.MapStruct(postDTO, &post); err != nil {
 			return err
 		}
-		return p.db.Save(&post).Error
+		return p.db.Model(&post).Updates(post).Error
 	})
 }
 

@@ -48,6 +48,11 @@ const docTemplate = `{
         },
         "/login/logout": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "用户退出登录",
                 "produces": [
                     "application/json"
@@ -146,7 +151,7 @@ const docTemplate = `{
                 "summary": "创建评论",
                 "parameters": [
                     {
-                        "description": "新增的评论数据",
+                        "description": "新增的评论数据，userId不用传",
                         "name": "CommentReq",
                         "in": "body",
                         "required": true,
@@ -189,40 +194,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.PostDTO"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ResultResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/posts/:id": {
-            "delete": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "删除文章",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "文章"
-                ],
-                "summary": "删除文章",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "文章id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -311,13 +282,47 @@ const docTemplate = `{
                 "summary": "修改文章",
                 "parameters": [
                     {
-                        "description": "修改的文章数据",
+                        "description": "修改的文章数据,createdAt不用传",
                         "name": "PostDTO",
                         "in": "body",
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/dto.PostDTO"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResultResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/posts/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "删除文章",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "文章"
+                ],
+                "summary": "删除文章",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "文章id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {

@@ -98,5 +98,9 @@ func (us *UserService) Logout(userId uint) error {
 	if err != nil {
 		return err
 	}
+	err = utils.DeleteRDB(userKey)
+	if err != nil {
+		return err
+	}
 	return nil
 }

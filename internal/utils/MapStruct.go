@@ -111,9 +111,20 @@ func setValueWithConvert(dst, src reflect.Value) error {
 		return nil
 	}
 
-	// 5. time.Time 和 string 互转（格式 yyyy-mm-dd hh:mm:ss）
-	if src.Type() == reflect.TypeOf(time.Time{}) && dst.Kind() == reflect.String {
-		t := src.Interface().(time.Time)
+	// 5. time.Time 或 *time.Time  和 string 互转（格式 yyyy-mm-dd hh:mm:ss）
+	if (src.Type() == reflect.TypeOf(time.Time{}) || src.Type() == reflect.TypeOf(&time.Time{})) && dst.Kind() == reflect.String {
+		if src.IsNil() && src.Kind() == reflect.Ptr {
+			// 如果是 *time.Time 且为 nil，就赋空字符串
+			dst.SetString("")
+			return nil
+		}
+
+		var t time.Time
+		if src.Type() == reflect.TypeOf(&time.Time{}) {
+			t = *src.Interface().(*time.Time)
+		} else {
+			t = src.Interface().(time.Time)
+		}
 		dst.SetString(t.Format(timeLayout))
 		return nil
 	}
@@ -128,6 +139,20 @@ func setValueWithConvert(dst, src reflect.Value) error {
 			return err
 		}
 		dst.Set(reflect.ValueOf(t))
+		return nil
+	}
+	// 字符串转 *time.Time
+	if src.Kind() == reflect.String && dst.Type() == reflect.TypeOf(&time.Time{}) {
+		str := src.String()
+		if str == "" {
+			dst.Set(reflect.Zero(dst.Type())) // 赋 nil
+			return nil
+		}
+		t, err := time.Parse(timeLayout, str)
+		if err != nil {
+			return err
+		}
+		dst.Set(reflect.ValueOf(&t))
 		return nil
 	}
 

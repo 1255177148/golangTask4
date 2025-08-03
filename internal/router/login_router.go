@@ -19,6 +19,6 @@ func RegisterLoginRouter(rg *gin.RouterGroup, db *gorm.DB, sqlxDB *sqlx.DB) {
 		login.GET("/getCaptcha", loginCtrl.GetCaptcha)
 		login.POST("/register", loginCtrl.RegisterUser)
 		login.POST("/", loginCtrl.Login)
-		login.POST("/logout", loginCtrl.Logout, middleware.JWTMiddleware())
+		login.POST("/logout", middleware.JWTMiddleware(), loginCtrl.Logout) // 中间件必须在前
 	}
 }
