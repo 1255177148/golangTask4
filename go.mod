@@ -3,6 +3,7 @@ module github.com/1255177148/golangTask4
 go 1.24
 
 require (
+	github.com/ethereum/go-ethereum v1.16.2
 	github.com/gin-contrib/cors v1.7.6
 	github.com/gin-gonic/gin v1.10.1
 	github.com/go-playground/validator/v10 v10.27.0

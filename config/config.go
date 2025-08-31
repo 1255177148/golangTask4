@@ -29,6 +29,10 @@ type Config struct {
 	Redis struct {
 		Host string
 	}
+	Contract struct {
+		HttpUrl      string
+		WebsocketUrl string
+	}
 }
 
 var Cfg Config

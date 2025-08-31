@@ -76,3 +76,8 @@ tidy:
 .PHONY: lint
 lint:
 	go vet ./...
+
+.PHONY: abigen
+abigen:
+	mkdir -p .\contract\erc20demo
+	abigen --abi=./contract/erc20demo/ERC20Demo.json --pkg=erc20demo --out=./contract/erc20demo/ERC20Demo.go
