@@ -68,7 +68,7 @@ func (us *UserService) CheckLogin(user *dto.UserDTO) (string, error) {
 // AuthUser 用户认证
 func (us *UserService) AuthUser(userAuth *dto.UserAuth) error {
 	return us.db.Transaction(func(tx *gorm.DB) error {
-		repo := repository.NewUserRepository(tx, us.sqlxDB)
+		repo := us.repo.WithTx(tx)
 		// 先获取用户数据
 		user, err := repo.FindUserByID(userAuth.ID)
 		if err != nil {

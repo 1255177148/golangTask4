@@ -16,6 +16,13 @@ func NewCommentRepository(db *gorm.DB, sqlxDB *sqlx.DB) *CommentRepository {
 	return &CommentRepository{db: db, sqlxDB: sqlxDB}
 }
 
+func (cr *CommentRepository) WithTx(tx *gorm.DB) *CommentRepository {
+	return &CommentRepository{
+		db:     tx,
+		sqlxDB: cr.sqlxDB, // 保留 sqlxDB
+	}
+}
+
 func (cr *CommentRepository) CreateComment(comment *po.Comment) error {
 	return cr.db.Create(comment).Error
 }

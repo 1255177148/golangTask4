@@ -26,3 +26,6 @@ redis:
 contract:
   httpUrl: https://eth-mainnet.g.alchemy.com/v2/27NL_0zlbK15k86qzL4emhJMRO-kDoPX
   websocketUrl: wss://eth-mainnet.g.alchemy.com/v2/27NL_0zlbK15k86qzL4emhJMRO-kDoPX
+  erc20Contract:
+    address: 0x3f3648cdc599094ff35353f815ad505c487b618c
+    erc20BlockNumber: 9101518

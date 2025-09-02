@@ -23,7 +23,7 @@ func NewPostService(db *gorm.DB, sqlxDB *sqlx.DB, postRepo *repository.PostRepos
 // CreatePost 创建文章
 func (ps *PostService) CreatePost(postDTO *dto.PostDTO) error {
 	return ps.db.Transaction(func(tx *gorm.DB) error {
-		userRepo := repository.NewUserRepository(tx, ps.sqlxDB)
+		userRepo := ps.userRepo.WithTx(tx)
 		// 先查看用户有没有认证
 		var authFlag string
 		authFlag, err := userRepo.CheckUserAuth(postDTO.UserId)
@@ -33,7 +33,7 @@ func (ps *PostService) CreatePost(postDTO *dto.PostDTO) error {
 		if authFlag == "0" {
 			return errors.New(constant.NotAuth)
 		}
-		postRepo := repository.NewPostRepository(tx, ps.sqlxDB)
+		postRepo := ps.postRepo.WithTx(tx)
 		// 将文章写入数据库
 		if err := postRepo.CreatePost(postDTO); err != nil {
 			return err

@@ -27,7 +27,7 @@ func NewCommentService(db *gorm.DB, sqlxDB *sqlx.DB, commentRepo *repository.Com
 func (cs *CommentService) CreateComment(commentReq *request.CommentReq) error {
 	return cs.db.Transaction(func(tx *gorm.DB) error {
 		// 校验是否认证过
-		userRepo := repository.NewUserRepository(tx, cs.sqlxDB)
+		userRepo := cs.userRepo.WithTx(tx)
 		var authFlag string
 		authFlag, err := userRepo.CheckUserAuth(commentReq.UserID)
 		if err != nil {
@@ -36,7 +36,7 @@ func (cs *CommentService) CreateComment(commentReq *request.CommentReq) error {
 		if authFlag == "0" {
 			return errors.New(constant.NotAuth)
 		}
-		commentRepo := repository.NewCommentRepository(tx, cs.sqlxDB)
+		commentRepo := cs.commentRepo.WithTx(tx)
 		var comment po.Comment
 		err = utils.MapStruct(commentReq, &comment)
 		if err != nil {

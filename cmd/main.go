@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"github.com/1255177148/golangTask4/config"
 	"github.com/1255177148/golangTask4/docs"
@@ -9,6 +11,11 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 // @title           个人博客系统后端 API 文档
@@ -41,8 +48,29 @@ func main() {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	bootstrap.InitRedis() // 初始化redis
 
-	err := r.Run(":" + config.Cfg.Server.Port) // 启动服务
-	if err != nil {
-		panic(err)
+	// 8. 使用 http.Server 包装 Gin，支持优雅关闭
+	srv := &http.Server{
+		Addr:    ":" + config.Cfg.Server.Port,
+		Handler: r,
+	}
+
+	go func() {
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			panic("listen: " + err.Error())
+		}
+	}()
+	fmt.Println("🚀 服务已启动，端口:", config.Cfg.Server.Port)
+	// 9. 监听系统信号 (Ctrl+C, kill)
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	fmt.Println("⚠️ 收到退出信号，开始优雅关闭...")
+	// 11. 优雅关闭 Gin
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		fmt.Println("❌ Gin 优雅关闭失败:", err)
+	} else {
+		fmt.Println("✅ Gin 已优雅退出")
 	}
 }

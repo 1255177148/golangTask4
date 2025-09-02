@@ -16,6 +16,13 @@ func NewUserRepository(db *gorm.DB, sqlxDB *sqlx.DB) *UserRepository {
 	return &UserRepository{db: db, sqlxDB: sqlxDB}
 }
 
+func (u *UserRepository) WithTx(tx *gorm.DB) *UserRepository {
+	return &UserRepository{
+		db:     tx,
+		sqlxDB: u.sqlxDB,
+	}
+}
+
 // CreateUser 注册用户
 func (u *UserRepository) CreateUser(user *po.User) error {
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)

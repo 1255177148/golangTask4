@@ -2,17 +2,12 @@ package router
 
 import (
 	"github.com/1255177148/golangTask4/internal/app/controller"
-	"github.com/1255177148/golangTask4/internal/app/repository"
-	"github.com/1255177148/golangTask4/internal/app/service"
+	"github.com/1255177148/golangTask4/internal/container"
 	"github.com/gin-gonic/gin"
-	"github.com/jmoiron/sqlx"
-	"gorm.io/gorm"
 )
 
-func RegisterCommentRouters(rg *gin.RouterGroup, db *gorm.DB, sqlxDB *sqlx.DB) {
-	userRepo := repository.NewUserRepository(db, sqlxDB)
-	commentRepo := repository.NewCommentRepository(db, sqlxDB)
-	commentService := service.NewCommentService(db, sqlxDB, commentRepo, userRepo)
+func RegisterCommentRouters(rg *gin.RouterGroup) {
+	commentService := container.Instance.CommentService
 	commentController := controller.NewCommentController(commentService)
 
 	comments := rg.Group("/comments")

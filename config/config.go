@@ -30,9 +30,13 @@ type Config struct {
 		Host string
 	}
 	Contract struct {
-		HttpUrl      string
-		WebsocketUrl string
-	}
+		HttpUrl       string `mapstructure:"httpUrl"`
+		WebsocketUrl  string `mapstructure:"websocketUrl"`
+		ERC20Contract struct {
+			Address          string `mapstructure:"address"`
+			ERC20BlockNumber uint64 `mapstructure:"erc20BlockNumber"`
+		} `mapstructure:"erc20Contract"`
+	} `mapstructure:"contract"`
 }
 
 var Cfg Config

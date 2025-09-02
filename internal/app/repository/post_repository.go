@@ -18,6 +18,13 @@ func NewPostRepository(db *gorm.DB, sqlxDB *sqlx.DB) *PostRepository {
 	return &PostRepository{db: db, sqlxDB: sqlxDB}
 }
 
+func (p *PostRepository) WithTx(tx *gorm.DB) *PostRepository {
+	return &PostRepository{
+		db:     tx,
+		sqlxDB: p.sqlxDB,
+	}
+}
+
 func (p *PostRepository) CreatePost(postDTO *dto.PostDTO) error {
 	var post po.Post
 	if err := utils.MapStruct(postDTO, &post); err != nil {
