@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/1255177148/golangTask4/contract/erc20demo"
-	"github.com/1255177148/golangTask4/internal/pkg"
+	"github.com/1255177148/golangTask4/internal/pkg/contract"
 	"github.com/1255177148/golangTask4/internal/utils/log"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-type Listener struct {
+type ERC20Listener struct {
 	client          *ethclient.Client
 	service         *Erc20Service
 	ctx             context.Context
@@ -25,10 +25,10 @@ type Listener struct {
 }
 
 // NewListener 初始化监听实例
-func NewListener(service *Erc20Service, startBlock uint64) *Listener {
+func NewListener(service *Erc20Service, startBlock uint64) *ERC20Listener {
 	ctx, cancel := context.WithCancel(context.Background())
-	return &Listener{
-		client:          pkg.ContractClient.WsClient,
+	return &ERC20Listener{
+		client:          contract.Client.WsClient,
 		service:         service,
 		ctx:             ctx,
 		cancel:          cancel,
@@ -38,19 +38,19 @@ func NewListener(service *Erc20Service, startBlock uint64) *Listener {
 	}
 }
 
-// Start 启动监听
-func (l *Listener) Start() {
+// StartListen 启动监听
+func (l *ERC20Listener) StartListen() {
 	go l.syncLoop()  // 历史事件同步
 	go l.watchLoop() // 实时事件订阅
 }
 
-// Stop 停止监听
-func (l *Listener) Stop() {
+// StopListen 停止监听
+func (l *ERC20Listener) StopListen() {
 	l.cancel()
 }
 
 // syncLoop 历史事件同步循环
-func (l *Listener) syncLoop() {
+func (l *ERC20Listener) syncLoop() {
 	ticker := time.NewTicker(time.Minute * 2) //每2分钟触发一次
 	defer ticker.Stop()
 
@@ -64,7 +64,7 @@ func (l *Listener) syncLoop() {
 	}
 }
 
-func (l *Listener) syncHistory() {
+func (l *ERC20Listener) syncHistory() {
 	header, err := l.client.HeaderByNumber(l.ctx, nil)
 	if err != nil {
 		log.Error("获取最新区块失败:", zap.Error(err))
@@ -76,7 +76,7 @@ func (l *Listener) syncHistory() {
 		return
 	}
 
-	batchSize := uint64(5000) // 每批拉取 5000 个区块，可根据节点性能调整
+	batchSize := uint64(10) // 每批拉取 10 个区块，可根据节点性能调整，因为这里是免费版，只能限制10个区块
 	start := l.lastSyncedBlock + 1
 	for start <= latest {
 		end := start + batchSize - 1
@@ -116,7 +116,7 @@ func (l *Listener) syncHistory() {
 }
 
 // watchLoop 实时事件订阅
-func (l *Listener) watchLoop() {
+func (l *ERC20Listener) watchLoop() {
 	transferCh := make(chan *erc20demo.Erc20demoTransfer)
 	mintCh := make(chan *erc20demo.Erc20demoMint)
 
@@ -149,16 +149,16 @@ func (l *Listener) watchLoop() {
 			return
 		case ev := <-transferCh:
 			l.handleEvent(ev.Raw.BlockNumber, ev.Raw.Index,
-				fmt.Sprintf("[历史 Mint] -> %s, value=%s", ev.To.Hex(), ev.Amount.String()))
+				fmt.Sprintf("[实时 Transfer] -> %s, value=%s", ev.To.Hex(), ev.Amount.String()))
 		case ev := <-mintCh:
 			l.handleEvent(ev.Raw.BlockNumber, ev.Raw.Index,
-				fmt.Sprintf("[历史 Mint] -> %s, value=%s", ev.To.Hex(), ev.Amount.String()))
+				fmt.Sprintf("[实时 Mint] -> %s, value=%s", ev.To.Hex(), ev.Amount.String()))
 		}
 	}
 }
 
 // handleEvent 处理事件并去重
-func (l *Listener) handleEvent(blockNumber uint64, logIndex uint, msg string) {
+func (l *ERC20Listener) handleEvent(blockNumber uint64, logIndex uint, msg string) {
 	id := fmt.Sprintf("%d-%d", blockNumber, logIndex)
 	l.mu.Lock()
 	defer l.mu.Unlock()

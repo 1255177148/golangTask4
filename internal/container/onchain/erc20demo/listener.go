@@ -11,8 +11,7 @@ import (
 //
 //	service    - erc20service依赖
 //	startBlock - 合约部署时的区块号，可以从配置文件中获取
-func InitERC20Listener(service *erc20demo.Erc20Service) *erc20demo.Listener {
+func InitERC20Listener(service *erc20demo.Erc20Service) *erc20demo.ERC20Listener {
 	erc20demoListener := erc20demo.NewListener(service, config.Cfg.Contract.ERC20Contract.ERC20BlockNumber)
-	erc20demoListener.Start()
 	return erc20demoListener
 }

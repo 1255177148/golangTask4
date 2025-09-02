@@ -1,10 +1,10 @@
-package pkg
+package contract
 
 import "github.com/ethereum/go-ethereum/ethclient"
 
-type ContractInstance struct {
+type Instance struct {
 	HttpClient *ethclient.Client
 	WsClient   *ethclient.Client
 }
 
-var ContractClient *ContractInstance
+var Client *Instance

@@ -7,6 +7,7 @@ import (
 	"github.com/1255177148/golangTask4/config"
 	"github.com/1255177148/golangTask4/docs"
 	"github.com/1255177148/golangTask4/internal/bootstrap"
+	"github.com/1255177148/golangTask4/internal/container"
 	"github.com/1255177148/golangTask4/internal/utils/log"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -27,11 +28,12 @@ import (
 // @in header
 // @name Authorization
 func main() {
+	// 1. 加载配置
 	config.LoadConfig() // 加载配置文件
-
 	fmt.Println("✅ 配置加载成功")
 	fmt.Println("数据库连接:", config.Cfg.Database.DSN)
 
+	// 2. 初始化日志
 	bootstrap.InitLogger()
 	log.Init(bootstrap.Logger)
 	defer func(Logger *zap.Logger) {
@@ -41,11 +43,16 @@ func main() {
 		}
 	}(bootstrap.Logger)
 
-	bootstrap.InitDB()                                           // 初始化 GORM和sqlx
+	// 3. 初始化ethereum client
+	bootstrap.InitContractClient() // 初始化ethereum client
+	// 4. 初始化数据库
+	bootstrap.InitDB() // 初始化 GORM和sqlx
+	// 5. 初始化 Gin
 	r := bootstrap.InitApp(bootstrap.DB.Gorm, bootstrap.DB.Sqlx) // 初始化 Gin
-	// 注册 Swagger
+	// 6. 注册 Swagger
 	docs.SwaggerInfo.BasePath = "/api"
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	// 7. 初始化 Redis
 	bootstrap.InitRedis() // 初始化redis
 
 	// 8. 使用 http.Server 包装 Gin，支持优雅关闭
@@ -65,6 +72,8 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	fmt.Println("⚠️ 收到退出信号，开始优雅关闭...")
+	// 10. 关闭链上listener
+	container.StopAllListeners()
 	// 11. 优雅关闭 Gin
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

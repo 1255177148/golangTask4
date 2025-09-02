@@ -21,7 +21,7 @@ type Container struct {
 	PostService       *service.PostService
 	CommentService    *service.CommentService
 	Erc20Service      *erc20demo.Erc20Service
-	ERC20Listener     *erc20demo.Listener
+	ERC20Listener     *erc20demo.ERC20Listener
 }
 
 var Instance Container
@@ -46,5 +46,6 @@ func Init(db *gorm.DB, sqlxDB *sqlx.DB) *Container {
 		Erc20Service:      erc20Service,
 		ERC20Listener:     erc20Listener,
 	}
+	InitListenerManage()
 	return &Instance
 }

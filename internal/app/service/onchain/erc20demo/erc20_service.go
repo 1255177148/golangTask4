@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/1255177148/golangTask4/contract/erc20demo"
-	"github.com/1255177148/golangTask4/internal/pkg"
+	contractConfig "github.com/1255177148/golangTask4/internal/pkg/contract"
 	"github.com/1255177148/golangTask4/internal/utils/contract"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -21,11 +21,11 @@ type Erc20Service struct {
 // NewERC20Contract 创建合约实例
 func NewERC20Contract(address string) (*Erc20Service, error) {
 	contractAddr := common.HexToAddress(address)
-	httpInstance, err := erc20demo.NewErc20demo(contractAddr, pkg.ContractClient.HttpClient)
+	httpInstance, err := erc20demo.NewErc20demo(contractAddr, contractConfig.Client.HttpClient)
 	if err != nil {
 		return nil, err
 	}
-	wsInstance, err := erc20demo.NewErc20demo(contractAddr, pkg.ContractClient.WsClient)
+	wsInstance, err := erc20demo.NewErc20demo(contractAddr, contractConfig.Client.WsClient)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (e *Erc20Service) Mint(account common.Address, amount *big.Int) (string, er
 	if err != nil {
 		panic(err)
 	}
-	txSender := contract.NewTxSender(pkg.ContractClient.HttpClient, privateKey)
+	txSender := contract.NewTxSender(contractConfig.Client.HttpClient, privateKey)
 
 	// 第一种调用，gasLimit没有buffer余量，直接为预估gasLimit
 	//txHash, err := txSender.SendWithRetry(context.Background(), func(opts *bind.TransactOpts, i ...interface{}) (*types.Transaction, error) {
